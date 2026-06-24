@@ -69,23 +69,44 @@ namespace ChatApp.Forms
 
         private void DisplayMessage(ChatMessage message, bool isOwn)
         {
+            Color bubbleColor = isOwn
+                ? Color.FromArgb(220, 248, 198)
+                : Color.White;
+            Color headerColor = isOwn
+                ? Color.FromArgb(0, 102, 51)
+                : Color.FromArgb(0, 51, 102);
+
+            // Lateral margins: the message occupies roughly 70% of the width on its
+            // side, leaving a gap on the opposite side (wide margin) and a small gap
+            // against its own edge (narrow margin).
+            int wideMargin = Math.Max(60, (int)(rtbHistory.ClientSize.Width * 0.30));
+            const int narrowMargin = 12;
+
             rtbHistory.SelectionStart = rtbHistory.TextLength;
             rtbHistory.SelectionLength = 0;
 
             rtbHistory.SelectionAlignment = isOwn
                 ? HorizontalAlignment.Right
                 : HorizontalAlignment.Left;
+            rtbHistory.SelectionIndent = isOwn ? wideMargin : narrowMargin;
+            rtbHistory.SelectionRightIndent = isOwn ? narrowMargin : wideMargin;
+            rtbHistory.SelectionBackColor = bubbleColor;
 
-            rtbHistory.SelectionColor = isOwn
-                ? Color.FromArgb(0, 102, 51)
-                : Color.FromArgb(0, 51, 102);
+            rtbHistory.SelectionColor = headerColor;
             rtbHistory.SelectionFont = new Font(rtbHistory.Font, FontStyle.Bold);
             rtbHistory.AppendText(string.Format("{0}  {1:HH:mm}{2}",
                 message.Sender, message.Timestamp, Environment.NewLine));
 
             rtbHistory.SelectionColor = Color.Black;
             rtbHistory.SelectionFont = new Font(rtbHistory.Font, FontStyle.Regular);
-            rtbHistory.AppendText(message.Content + Environment.NewLine + Environment.NewLine);
+            rtbHistory.AppendText(message.Content + Environment.NewLine);
+
+            // Spacer line between messages, without margins or bubble color.
+            rtbHistory.SelectionIndent = 0;
+            rtbHistory.SelectionRightIndent = 0;
+            rtbHistory.SelectionAlignment = HorizontalAlignment.Left;
+            rtbHistory.SelectionBackColor = rtbHistory.BackColor;
+            rtbHistory.AppendText(Environment.NewLine);
 
             rtbHistory.SelectionStart = rtbHistory.TextLength;
             rtbHistory.ScrollToCaret();
