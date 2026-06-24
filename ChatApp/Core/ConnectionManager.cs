@@ -57,6 +57,9 @@ namespace ChatApp.Core
                 case Protocol.Msg:
                     HandleMessage(source, parts);
                     break;
+                case Protocol.Broadcast:
+                    HandleBroadcast(source, parts);
+                    break;
             }
         }
 
@@ -150,6 +153,29 @@ namespace ChatApp.Core
             {
                 target.Send(Protocol.Build(Protocol.Msg, source.Username, parts[2]));
             }
+        }
+
+        private void HandleBroadcast(ClientConnection source, string[] parts)
+        {
+            if (!source.Authenticated || parts.Length < 2)
+            {
+                return;
+            }
+
+            string line = Protocol.Build(Protocol.Broadcast, source.Username, parts[1]);
+
+            List<ClientConnection> recipients;
+            lock (_lock)
+            {
+                recipients = _clients.Where(c => c.Authenticated && c != source).ToList();
+            }
+
+            foreach (ClientConnection c in recipients)
+            {
+                c.Send(line);
+            }
+
+            RaiseLog(string.Format("[global] {0} enviou uma mensagem.", source.Username));
         }
 
         private void OnDisconnect(ClientConnection client)

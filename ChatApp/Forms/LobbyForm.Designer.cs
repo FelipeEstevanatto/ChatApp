@@ -7,6 +7,10 @@ namespace ChatApp.Forms
         private System.Windows.Forms.Label lblUsers;
         private System.Windows.Forms.ListBox lstUsers;
         private System.Windows.Forms.Button btnRequest;
+        private System.Windows.Forms.Label lblGlobal;
+        private System.Windows.Forms.RichTextBox rtbGlobal;
+        private System.Windows.Forms.TextBox txtGlobal;
+        private System.Windows.Forms.Button btnSendGlobal;
 
         protected override void Dispose(bool disposing)
         {
@@ -24,14 +28,17 @@ namespace ChatApp.Forms
             this.lblUsers = new System.Windows.Forms.Label();
             this.lstUsers = new System.Windows.Forms.ListBox();
             this.btnRequest = new System.Windows.Forms.Button();
+            this.lblGlobal = new System.Windows.Forms.Label();
+            this.rtbGlobal = new System.Windows.Forms.RichTextBox();
+            this.txtGlobal = new System.Windows.Forms.TextBox();
+            this.btnSendGlobal = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblName
             // 
             this.lblName.AutoSize = true;
             this.lblName.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.lblName.Location = new System.Drawing.Point(16, 15);
-            this.lblName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblName.Location = new System.Drawing.Point(16, 12);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(60, 25);
             this.lblName.TabIndex = 0;
@@ -40,8 +47,7 @@ namespace ChatApp.Forms
             // lblUsers
             // 
             this.lblUsers.AutoSize = true;
-            this.lblUsers.Location = new System.Drawing.Point(17, 55);
-            this.lblUsers.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblUsers.Location = new System.Drawing.Point(17, 52);
             this.lblUsers.Name = "lblUsers";
             this.lblUsers.Size = new System.Drawing.Size(156, 16);
             this.lblUsers.TabIndex = 1;
@@ -49,45 +55,94 @@ namespace ChatApp.Forms
             // 
             // lstUsers
             // 
+            this.lstUsers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstUsers.FormattingEnabled = true;
             this.lstUsers.IntegralHeight = false;
             this.lstUsers.ItemHeight = 16;
-            this.lstUsers.Location = new System.Drawing.Point(21, 78);
-            this.lstUsers.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lstUsers.Location = new System.Drawing.Point(20, 78);
             this.lstUsers.Name = "lstUsers";
-            this.lstUsers.Size = new System.Drawing.Size(372, 307);
+            this.lstUsers.Size = new System.Drawing.Size(300, 372);
             this.lstUsers.TabIndex = 2;
             this.lstUsers.DoubleClick += new System.EventHandler(this.lstUsers_DoubleClick);
             // 
             // btnRequest
             // 
-            this.btnRequest.Location = new System.Drawing.Point(21, 398);
-            this.btnRequest.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnRequest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnRequest.Location = new System.Drawing.Point(20, 460);
             this.btnRequest.Name = "btnRequest";
-            this.btnRequest.Size = new System.Drawing.Size(373, 44);
+            this.btnRequest.Size = new System.Drawing.Size(300, 50);
             this.btnRequest.TabIndex = 3;
-            this.btnRequest.Text = "Solicitar conversa";
+            this.btnRequest.Text = "Solicitar conversa privada";
             this.btnRequest.UseVisualStyleBackColor = true;
             this.btnRequest.Click += new System.EventHandler(this.btnRequest_Click);
             // 
+            // lblGlobal
+            // 
+            this.lblGlobal.AutoSize = true;
+            this.lblGlobal.Location = new System.Drawing.Point(344, 52);
+            this.lblGlobal.Name = "lblGlobal";
+            this.lblGlobal.Size = new System.Drawing.Size(73, 16);
+            this.lblGlobal.TabIndex = 4;
+            this.lblGlobal.Text = "Chat global:";
+            // 
+            // rtbGlobal
+            // 
+            this.rtbGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbGlobal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(229)))), ((int)(((byte)(221)))));
+            this.rtbGlobal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.rtbGlobal.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.rtbGlobal.Location = new System.Drawing.Point(348, 78);
+            this.rtbGlobal.Name = "rtbGlobal";
+            this.rtbGlobal.ReadOnly = true;
+            this.rtbGlobal.Size = new System.Drawing.Size(452, 372);
+            this.rtbGlobal.TabIndex = 5;
+            this.rtbGlobal.Text = "";
+            // 
+            // txtGlobal
+            // 
+            this.txtGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtGlobal.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtGlobal.Location = new System.Drawing.Point(348, 464);
+            this.txtGlobal.Name = "txtGlobal";
+            this.txtGlobal.Size = new System.Drawing.Size(328, 30);
+            this.txtGlobal.TabIndex = 6;
+            // 
+            // btnSendGlobal
+            // 
+            this.btnSendGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSendGlobal.Location = new System.Drawing.Point(688, 461);
+            this.btnSendGlobal.Name = "btnSendGlobal";
+            this.btnSendGlobal.Size = new System.Drawing.Size(112, 36);
+            this.btnSendGlobal.TabIndex = 7;
+            this.btnSendGlobal.Text = "Enviar";
+            this.btnSendGlobal.UseVisualStyleBackColor = true;
+            this.btnSendGlobal.Click += new System.EventHandler(this.btnSendGlobal_Click);
+            // 
             // LobbyForm
             // 
+            this.AcceptButton = this.btnSendGlobal;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(416, 462);
+            this.ClientSize = new System.Drawing.Size(820, 531);
+            this.Controls.Add(this.btnSendGlobal);
+            this.Controls.Add(this.txtGlobal);
+            this.Controls.Add(this.rtbGlobal);
+            this.Controls.Add(this.lblGlobal);
             this.Controls.Add(this.btnRequest);
             this.Controls.Add(this.lstUsers);
             this.Controls.Add(this.lblUsers);
             this.Controls.Add(this.lblName);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.MinimumSize = new System.Drawing.Size(431, 499);
+            this.MinimumSize = new System.Drawing.Size(620, 470);
             this.Name = "LobbyForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ChatApp - Saguao";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
     }
 }

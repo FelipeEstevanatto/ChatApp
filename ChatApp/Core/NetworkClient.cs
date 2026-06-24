@@ -33,6 +33,7 @@ namespace ChatApp.Core
         public event Action<string> ChatRequestAccepted;
         public event Action<string> ChatRequestDeclined;
         public event Action<string, string> MessageReceived;
+        public event Action<string, string> BroadcastReceived;
         public event Action Disconnected;
 
         public void Connect(string host, int port, string name)
@@ -129,6 +130,17 @@ namespace ChatApp.Core
                         }
                     }
                     break;
+                case Protocol.Broadcast:
+                    if (parts.Length > 2)
+                    {
+                        string text = Protocol.DecodeText(parts[2]);
+                        Action<string, string> handler = BroadcastReceived;
+                        if (handler != null)
+                        {
+                            handler(parts[1], text);
+                        }
+                    }
+                    break;
             }
         }
 
@@ -173,6 +185,11 @@ namespace ChatApp.Core
         public void SendMessage(string target, string text)
         {
             Send(Protocol.Build(Protocol.Msg, target, Protocol.EncodeText(text)));
+        }
+
+        public void SendBroadcast(string text)
+        {
+            Send(Protocol.Build(Protocol.Broadcast, Protocol.EncodeText(text)));
         }
 
         public void Disconnect()

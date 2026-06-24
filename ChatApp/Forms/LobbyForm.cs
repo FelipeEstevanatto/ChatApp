@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using ChatApp.Core;
 
@@ -32,7 +33,61 @@ namespace ChatApp.Forms
             _client.ChatRequestAccepted += OnChatRequestAccepted;
             _client.ChatRequestDeclined += OnChatRequestDeclined;
             _client.MessageReceived += OnMessageReceived;
+            _client.BroadcastReceived += OnBroadcastReceived;
             _client.Disconnected += OnDisconnected;
+
+            btnSendGlobal.Enabled = false;
+            txtGlobal.TextChanged += (s, e) => btnSendGlobal.Enabled = txtGlobal.Text.Trim().Length > 0;
+        }
+
+        private void btnSendGlobal_Click(object sender, EventArgs e)
+        {
+            string text = txtGlobal.Text.Trim();
+            if (text.Length == 0)
+            {
+                return;
+            }
+
+            _client.SendBroadcast(text);
+            AppendGlobalMessage(_localName, text, true);
+
+            txtGlobal.Clear();
+            txtGlobal.Focus();
+        }
+
+        private void OnBroadcastReceived(string source, string text)
+        {
+            if (!IsHandleCreated)
+            {
+                return;
+            }
+
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action<string, string>(OnBroadcastReceived), source, text);
+                return;
+            }
+
+            AppendGlobalMessage(source, text, false);
+        }
+
+        private void AppendGlobalMessage(string sender, string text, bool isOwn)
+        {
+            rtbGlobal.SelectionStart = rtbGlobal.TextLength;
+            rtbGlobal.SelectionLength = 0;
+
+            rtbGlobal.SelectionColor = isOwn
+                ? Color.FromArgb(0, 102, 51)
+                : Color.FromArgb(0, 51, 102);
+            rtbGlobal.SelectionFont = new Font(rtbGlobal.Font, FontStyle.Bold);
+            rtbGlobal.AppendText(string.Format("{0}  {1:HH:mm}{2}", sender, DateTime.Now, Environment.NewLine));
+
+            rtbGlobal.SelectionColor = Color.Black;
+            rtbGlobal.SelectionFont = new Font(rtbGlobal.Font, FontStyle.Regular);
+            rtbGlobal.AppendText(text + Environment.NewLine + Environment.NewLine);
+
+            rtbGlobal.SelectionStart = rtbGlobal.TextLength;
+            rtbGlobal.ScrollToCaret();
         }
 
         protected override void OnShown(EventArgs e)
@@ -227,6 +282,7 @@ namespace ChatApp.Forms
             _client.ChatRequestAccepted -= OnChatRequestAccepted;
             _client.ChatRequestDeclined -= OnChatRequestDeclined;
             _client.MessageReceived -= OnMessageReceived;
+            _client.BroadcastReceived -= OnBroadcastReceived;
             _client.Disconnected -= OnDisconnected;
 
             List<ChatForm> openChats = new List<ChatForm>(_chats.Values);

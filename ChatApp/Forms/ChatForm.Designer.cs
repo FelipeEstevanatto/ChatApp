@@ -33,8 +33,8 @@ namespace ChatApp.Forms
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
             this.pnlHeader.SuspendLayout();
-            this.pnlBottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.pnlBottom.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlHeader
@@ -56,7 +56,7 @@ namespace ChatApp.Forms
             this.lblHeaderName.ForeColor = System.Drawing.Color.White;
             this.lblHeaderName.Location = new System.Drawing.Point(13, 7);
             this.lblHeaderName.Name = "lblHeaderName";
-            this.lblHeaderName.Size = new System.Drawing.Size(86, 25);
+            this.lblHeaderName.Size = new System.Drawing.Size(94, 25);
             this.lblHeaderName.TabIndex = 0;
             this.lblHeaderName.Text = "Conversa";
             // 
@@ -67,7 +67,7 @@ namespace ChatApp.Forms
             this.lblHeaderStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(225)))), ((int)(((byte)(212)))));
             this.lblHeaderStatus.Location = new System.Drawing.Point(15, 34);
             this.lblHeaderStatus.Name = "lblHeaderStatus";
-            this.lblHeaderStatus.Size = new System.Drawing.Size(45, 17);
+            this.lblHeaderStatus.Size = new System.Drawing.Size(46, 19);
             this.lblHeaderStatus.TabIndex = 1;
             this.lblHeaderStatus.Text = "online";
             // 
@@ -148,10 +148,11 @@ namespace ChatApp.Forms
             this.Text = "Conversa";
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.pnlBottom.ResumeLayout(false);
             this.pnlBottom.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+
         }
     }
 }

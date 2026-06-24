@@ -18,6 +18,7 @@ namespace ChatApp.Core
         public const string Accept = "ACCEPT";
         public const string Decline = "DECLINE";
         public const string Msg = "MSG";
+        public const string Broadcast = "BROADCAST";
 
         // Commands sent from the Server to the Client
         public const string LoginOk = "LOGIN_OK";
