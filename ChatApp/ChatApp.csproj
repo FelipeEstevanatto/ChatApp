@@ -46,11 +46,43 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="Core\Protocol.cs" />
+    <Compile Include="Core\User.cs" />
+    <Compile Include="Core\ChatMessage.cs" />
+    <Compile Include="Core\ClientConnection.cs" />
+    <Compile Include="Core\ConnectionManager.cs" />
+    <Compile Include="Core\Server.cs" />
+    <Compile Include="Core\NetworkClient.cs" />
+    <Compile Include="Core\ChatRoom.cs" />
+    <Compile Include="Forms\StartForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Forms\StartForm.Designer.cs">
+      <DependentUpon>StartForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ServerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ServerForm.Designer.cs">
+      <DependentUpon>ServerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\LobbyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LobbyForm.Designer.cs">
+      <DependentUpon>LobbyForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ChatForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ChatForm.Designer.cs">
+      <DependentUpon>ChatForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
