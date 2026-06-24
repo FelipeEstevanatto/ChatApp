@@ -13,6 +13,7 @@ namespace ChatApp.Forms
     {
         private readonly NetworkClient _client;
         private readonly ChatRoom _room;
+        private int _unreadCount;
 
         public ChatForm(NetworkClient client, string localName, string remoteName)
         {
@@ -21,8 +22,31 @@ namespace ChatApp.Forms
             _client = client;
             _room = new ChatRoom(new User(localName), new User(remoteName));
 
-            Text = "Conversa com " + remoteName;
-            lblHeader.Text = remoteName;
+            lblHeaderName.Text = remoteName;
+            lblHeaderStatus.Text = "online";
+            UpdateTitle();
+
+            btnSend.Enabled = false;
+            txtMessage.TextChanged += (s, e) => btnSend.Enabled = txtMessage.Text.Trim().Length > 0;
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            txtMessage.Focus();
+        }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            _unreadCount = 0;
+            UpdateTitle();
+        }
+
+        private void UpdateTitle()
+        {
+            string prefix = _unreadCount > 0 ? "(" + _unreadCount + ") " : string.Empty;
+            Text = prefix + "Conversa com " + _room.RemoteUser.Name;
         }
 
         private void btnSend_Click(object sender, EventArgs e)
@@ -64,6 +88,13 @@ namespace ChatApp.Forms
             if (!Visible)
             {
                 Show();
+            }
+
+            if (Form.ActiveForm != this)
+            {
+                _unreadCount++;
+                UpdateTitle();
+                BringToFront();
             }
         }
 

@@ -18,57 +18,64 @@ namespace ChatApp.Forms
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartForm));
             this.lblTitle = new System.Windows.Forms.Label();
             this.btnServer = new System.Windows.Forms.Button();
             this.btnClient = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            //
+            // 
             // lblTitle
-            //
+            // 
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.Location = new System.Drawing.Point(30, 25);
+            this.lblTitle.Location = new System.Drawing.Point(40, 31);
+            this.lblTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(320, 35);
+            this.lblTitle.Size = new System.Drawing.Size(427, 43);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "ChatApp";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            //
+            // 
             // btnServer
-            //
+            // 
             this.btnServer.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.btnServer.Location = new System.Drawing.Point(45, 85);
+            this.btnServer.Location = new System.Drawing.Point(60, 105);
+            this.btnServer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnServer.Name = "btnServer";
-            this.btnServer.Size = new System.Drawing.Size(290, 50);
+            this.btnServer.Size = new System.Drawing.Size(387, 62);
             this.btnServer.TabIndex = 1;
             this.btnServer.Text = "Iniciar como Servidor";
             this.btnServer.UseVisualStyleBackColor = true;
             this.btnServer.Click += new System.EventHandler(this.btnServer_Click);
-            //
+            // 
             // btnClient
-            //
+            // 
             this.btnClient.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.btnClient.Location = new System.Drawing.Point(45, 150);
+            this.btnClient.Location = new System.Drawing.Point(60, 185);
+            this.btnClient.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnClient.Name = "btnClient";
-            this.btnClient.Size = new System.Drawing.Size(290, 50);
+            this.btnClient.Size = new System.Drawing.Size(387, 62);
             this.btnClient.TabIndex = 2;
             this.btnClient.Text = "Conectar como Cliente";
             this.btnClient.UseVisualStyleBackColor = true;
             this.btnClient.Click += new System.EventHandler(this.btnClient_Click);
-            //
+            // 
             // StartForm
-            //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 231);
+            this.ClientSize = new System.Drawing.Size(512, 284);
             this.Controls.Add(this.btnClient);
             this.Controls.Add(this.btnServer);
             this.Controls.Add(this.lblTitle);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.Name = "StartForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ChatApp - Inicio";
             this.ResumeLayout(false);
+
         }
     }
 }

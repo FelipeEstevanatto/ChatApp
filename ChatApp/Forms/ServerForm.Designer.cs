@@ -22,6 +22,7 @@ namespace ChatApp.Forms
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ServerForm));
             this.lblPort = new System.Windows.Forms.Label();
             this.txtPort = new System.Windows.Forms.TextBox();
             this.btnStartStop = new System.Windows.Forms.Button();
@@ -117,6 +118,7 @@ namespace ChatApp.Forms
             this.Controls.Add(this.btnStartStop);
             this.Controls.Add(this.txtPort);
             this.Controls.Add(this.lblPort);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MinimumSize = new System.Drawing.Size(775, 499);
             this.Name = "ServerForm";
