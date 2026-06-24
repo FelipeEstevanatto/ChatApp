@@ -15,6 +15,7 @@ namespace ChatApp.Forms
         private readonly NetworkClient _client;
         private readonly ChatRoom _room;
         private int _unreadCount;
+        private bool _remoteOnline = true;
 
         public ChatForm(NetworkClient client, string localName, string remoteName)
         {
@@ -59,6 +60,7 @@ namespace ChatApp.Forms
                 return;
             }
 
+            _remoteOnline = online;
             lblHeaderStatus.Text = online ? "online" : "offline";
             lblHeaderStatus.ForeColor = online
                 ? Color.FromArgb(190, 225, 212)
@@ -83,6 +85,11 @@ namespace ChatApp.Forms
             ChatMessage message = new ChatMessage(_room.LocalUser.Name, _room.RemoteUser.Name, text);
             _room.Add(message);
             DisplayMessage(message, true);
+
+            if (!_remoteOnline)
+            {
+                DisplaySystemMessage(_room.RemoteUser.Name + " esta offline - mensagem nao entregue.");
+            }
 
             txtMessage.Clear();
             txtMessage.Focus();
@@ -154,6 +161,27 @@ namespace ChatApp.Forms
             rtbHistory.SelectionAlignment = HorizontalAlignment.Left;
             rtbHistory.SelectionBackColor = rtbHistory.BackColor;
             rtbHistory.AppendText(Environment.NewLine);
+
+            rtbHistory.SelectionStart = rtbHistory.TextLength;
+            rtbHistory.ScrollToCaret();
+        }
+
+        private void DisplaySystemMessage(string text)
+        {
+            rtbHistory.SelectionStart = rtbHistory.TextLength;
+            rtbHistory.SelectionLength = 0;
+
+            rtbHistory.SelectionIndent = 0;
+            rtbHistory.SelectionRightIndent = 0;
+            rtbHistory.SelectionBackColor = rtbHistory.BackColor;
+            rtbHistory.SelectionAlignment = HorizontalAlignment.Center;
+            rtbHistory.SelectionColor = Color.Gray;
+            rtbHistory.SelectionFont = new Font(rtbHistory.Font, FontStyle.Italic);
+            rtbHistory.AppendText(text + Environment.NewLine + Environment.NewLine);
+
+            rtbHistory.SelectionAlignment = HorizontalAlignment.Left;
+            rtbHistory.SelectionColor = Color.Black;
+            rtbHistory.SelectionFont = new Font(rtbHistory.Font, FontStyle.Regular);
 
             rtbHistory.SelectionStart = rtbHistory.TextLength;
             rtbHistory.ScrollToCaret();
