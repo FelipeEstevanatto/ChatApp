@@ -67,11 +67,7 @@ namespace ChatApp.Core
                         continue;
                     }
 
-                    Action<ClientConnection, string[]> handler = MessageReceived;
-                    if (handler != null)
-                    {
-                        handler(this, Protocol.Parse(line));
-                    }
+                    MessageReceived?.Invoke(this, Protocol.Parse(line));
                 }
             }
             catch
@@ -112,11 +108,7 @@ namespace ChatApp.Core
             try { _tcp.Close(); }
             catch { }
 
-            Action<ClientConnection> handler = Disconnected;
-            if (handler != null)
-            {
-                handler(this);
-            }
+            Disconnected?.Invoke(this);
         }
     }
 }

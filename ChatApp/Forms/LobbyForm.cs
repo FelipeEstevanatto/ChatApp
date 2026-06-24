@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Media;
 using System.Windows.Forms;
 using ChatApp.Core;
 
 namespace ChatApp.Forms
 {
     /// <summary>
-    /// Lobby: shows the user name, the list of connected users (updated automatically)
-    /// and allows requesting conversations. It also manages the chat windows opened for
-    /// each remote user.
+    /// Lobby: shows the user name, the list of connected users (updated automatically),
+    /// hosts the global chat and lets the user request private conversations. It also
+    /// manages the private chat windows opened for each remote user.
     /// </summary>
     public partial class LobbyForm : Form
     {
@@ -17,6 +19,7 @@ namespace ChatApp.Forms
         private readonly string _localName;
         private readonly Dictionary<string, ChatForm> _chats =
             new Dictionary<string, ChatForm>(StringComparer.OrdinalIgnoreCase);
+        private HashSet<string> _knownUsers;
         private bool _closingDueToDisconnect;
 
         public LobbyForm(NetworkClient client, string localName)
@@ -38,6 +41,17 @@ namespace ChatApp.Forms
 
             btnSendGlobal.Enabled = false;
             txtGlobal.TextChanged += (s, e) => btnSendGlobal.Enabled = txtGlobal.Text.Trim().Length > 0;
+
+            btnRequest.Enabled = false;
+            lstUsers.SelectedIndexChanged += (s, e) => btnRequest.Enabled = lstUsers.SelectedItem != null;
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            txtGlobal.SetCueBanner("Digite uma mensagem para todos...");
+            OnUserListUpdated(_client.GetLastUserList());
+            txtGlobal.Focus();
         }
 
         private void btnSendGlobal_Click(object sender, EventArgs e)
@@ -57,18 +71,17 @@ namespace ChatApp.Forms
 
         private void OnBroadcastReceived(string source, string text)
         {
-            if (!IsHandleCreated)
+            if (this.MarshalToUi(() => OnBroadcastReceived(source, text)))
             {
-                return;
-            }
-
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action<string, string>(OnBroadcastReceived), source, text);
                 return;
             }
 
             AppendGlobalMessage(source, text, false);
+
+            if (Form.ActiveForm != this)
+            {
+                SystemSounds.Asterisk.Play();
+            }
         }
 
         private void AppendGlobalMessage(string sender, string text, bool isOwn)
@@ -90,35 +103,45 @@ namespace ChatApp.Forms
             rtbGlobal.ScrollToCaret();
         }
 
-        protected override void OnShown(EventArgs e)
+        private void AppendSystemMessage(string text)
         {
-            base.OnShown(e);
-            OnUserListUpdated(_client.GetLastUserList());
+            rtbGlobal.SelectionStart = rtbGlobal.TextLength;
+            rtbGlobal.SelectionLength = 0;
+
+            rtbGlobal.SelectionAlignment = HorizontalAlignment.Center;
+            rtbGlobal.SelectionColor = Color.Gray;
+            rtbGlobal.SelectionFont = new Font(rtbGlobal.Font, FontStyle.Italic);
+            rtbGlobal.AppendText(text + Environment.NewLine + Environment.NewLine);
+
+            rtbGlobal.SelectionAlignment = HorizontalAlignment.Left;
+            rtbGlobal.SelectionColor = Color.Black;
+            rtbGlobal.SelectionFont = new Font(rtbGlobal.Font, FontStyle.Regular);
+
+            rtbGlobal.SelectionStart = rtbGlobal.TextLength;
+            rtbGlobal.ScrollToCaret();
         }
 
         private void OnUserListUpdated(List<string> names)
         {
-            if (!IsHandleCreated)
+            if (this.MarshalToUi(() => OnUserListUpdated(names)))
             {
                 return;
             }
 
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action<List<string>>(OnUserListUpdated), names);
-                return;
-            }
+            HashSet<string> others = new HashSet<string>(
+                names.Where(n => !string.Equals(n, _localName, StringComparison.OrdinalIgnoreCase)),
+                StringComparer.OrdinalIgnoreCase);
+
+            AnnounceJoinsAndLeaves(others);
+            UpdateChatPresence(others);
 
             object selected = lstUsers.SelectedItem;
 
             lstUsers.BeginUpdate();
             lstUsers.Items.Clear();
-            foreach (string name in names)
+            foreach (string name in others)
             {
-                if (!string.Equals(name, _localName, StringComparison.OrdinalIgnoreCase))
-                {
-                    lstUsers.Items.Add(name);
-                }
+                lstUsers.Items.Add(name);
             }
             lstUsers.EndUpdate();
 
@@ -131,15 +154,47 @@ namespace ChatApp.Forms
                 }
             }
 
+            btnRequest.Enabled = lstUsers.SelectedItem != null;
             lblUsers.Text = string.Format("Usuarios conectados ({0}):", lstUsers.Items.Count);
+        }
+
+        private void AnnounceJoinsAndLeaves(HashSet<string> others)
+        {
+            if (_knownUsers == null)
+            {
+                // First update: establish the baseline without announcing anyone.
+                _knownUsers = others;
+                return;
+            }
+
+            foreach (string joined in others.Except(_knownUsers))
+            {
+                AppendSystemMessage(joined + " entrou no saguao.");
+            }
+
+            foreach (string left in _knownUsers.Except(others))
+            {
+                AppendSystemMessage(left + " saiu do saguao.");
+            }
+
+            _knownUsers = others;
+        }
+
+        private void UpdateChatPresence(HashSet<string> others)
+        {
+            foreach (KeyValuePair<string, ChatForm> entry in _chats.ToList())
+            {
+                if (!entry.Value.IsDisposed)
+                {
+                    entry.Value.SetOnlineStatus(others.Contains(entry.Key));
+                }
+            }
         }
 
         private void btnRequest_Click(object sender, EventArgs e)
         {
             if (lstUsers.SelectedItem == null)
             {
-                MessageBox.Show("Selecione um usuario para conversar.", "Nenhum usuario selecionado",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -156,14 +211,8 @@ namespace ChatApp.Forms
 
         private void OnChatRequestReceived(string source)
         {
-            if (!IsHandleCreated)
+            if (this.MarshalToUi(() => OnChatRequestReceived(source)))
             {
-                return;
-            }
-
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action<string>(OnChatRequestReceived), source);
                 return;
             }
 
@@ -183,14 +232,8 @@ namespace ChatApp.Forms
 
         private void OnChatRequestAccepted(string other)
         {
-            if (!IsHandleCreated)
+            if (this.MarshalToUi(() => OnChatRequestAccepted(other)))
             {
-                return;
-            }
-
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action<string>(OnChatRequestAccepted), other);
                 return;
             }
 
@@ -200,14 +243,8 @@ namespace ChatApp.Forms
 
         private void OnChatRequestDeclined(string other)
         {
-            if (!IsHandleCreated)
+            if (this.MarshalToUi(() => OnChatRequestDeclined(other)))
             {
-                return;
-            }
-
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action<string>(OnChatRequestDeclined), other);
                 return;
             }
 
@@ -217,14 +254,8 @@ namespace ChatApp.Forms
 
         private void OnMessageReceived(string source, string text)
         {
-            if (!IsHandleCreated)
+            if (this.MarshalToUi(() => OnMessageReceived(source, text)))
             {
-                return;
-            }
-
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action<string, string>(OnMessageReceived), source, text);
                 return;
             }
 
@@ -248,19 +279,14 @@ namespace ChatApp.Forms
             chat.FormClosed += (s, args) => _chats.Remove(other);
             _chats[other] = chat;
             chat.Show();
+            chat.SetOnlineStatus(_knownUsers == null || _knownUsers.Contains(other));
             return chat;
         }
 
         private void OnDisconnected()
         {
-            if (!IsHandleCreated)
+            if (this.MarshalToUi(OnDisconnected))
             {
-                return;
-            }
-
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action(OnDisconnected));
                 return;
             }
 

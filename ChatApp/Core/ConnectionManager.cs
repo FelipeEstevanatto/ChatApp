@@ -225,11 +225,7 @@ namespace ChatApp.Core
                 c.Send(line);
             }
 
-            Action<List<string>> handler = ListUpdated;
-            if (handler != null)
-            {
-                handler(names);
-            }
+            ListUpdated?.Invoke(names);
         }
 
         public void CloseAll()
@@ -248,11 +244,7 @@ namespace ChatApp.Core
 
         private void RaiseLog(string message)
         {
-            Action<string> handler = Log;
-            if (handler != null)
-            {
-                handler(message);
-            }
+            Log?.Invoke(message);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Media;
 using System.Windows.Forms;
 using ChatApp.Core;
 
@@ -33,6 +34,7 @@ namespace ChatApp.Forms
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
+            txtMessage.SetCueBanner("Digite uma mensagem...");
             txtMessage.Focus();
         }
 
@@ -47,6 +49,20 @@ namespace ChatApp.Forms
         {
             string prefix = _unreadCount > 0 ? "(" + _unreadCount + ") " : string.Empty;
             Text = prefix + "Conversa com " + _room.RemoteUser.Name;
+        }
+
+        /// <summary>Updates the header status based on the remote user's presence.</summary>
+        public void SetOnlineStatus(bool online)
+        {
+            if (this.MarshalToUi(() => SetOnlineStatus(online)))
+            {
+                return;
+            }
+
+            lblHeaderStatus.Text = online ? "online" : "offline";
+            lblHeaderStatus.ForeColor = online
+                ? Color.FromArgb(190, 225, 212)
+                : Color.FromArgb(214, 188, 188);
         }
 
         private void btnSend_Click(object sender, EventArgs e)
@@ -75,9 +91,8 @@ namespace ChatApp.Forms
         /// <summary>Called by the lobby when a message from the remote user arrives.</summary>
         public void ReceiveMessage(string text)
         {
-            if (InvokeRequired)
+            if (this.MarshalToUi(() => ReceiveMessage(text)))
             {
-                BeginInvoke(new Action<string>(ReceiveMessage), text);
                 return;
             }
 
@@ -92,6 +107,7 @@ namespace ChatApp.Forms
 
             if (Form.ActiveForm != this)
             {
+                SystemSounds.Asterisk.Play();
                 _unreadCount++;
                 UpdateTitle();
                 BringToFront();

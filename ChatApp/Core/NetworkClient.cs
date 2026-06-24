@@ -80,11 +80,7 @@ namespace ChatApp.Core
             finally
             {
                 _active = false;
-                Action handler = Disconnected;
-                if (handler != null)
-                {
-                    handler();
-                }
+                Disconnected?.Invoke();
             }
         }
 
@@ -93,10 +89,10 @@ namespace ChatApp.Core
             switch (parts[0])
             {
                 case Protocol.LoginOk:
-                    Raise(LoginOk);
+                    LoginOk?.Invoke();
                     break;
                 case Protocol.LoginFail:
-                    Raise(LoginFailed, parts.Length > 1 ? parts[1] : "Falha no login");
+                    LoginFailed?.Invoke(parts.Length > 1 ? parts[1] : "Falha no login");
                     break;
                 case Protocol.UserList:
                     List<string> names = new List<string>();
@@ -108,38 +104,22 @@ namespace ChatApp.Core
                     {
                         _lastList = names;
                     }
-                    Raise(UserListUpdated, names);
+                    UserListUpdated?.Invoke(names);
                     break;
                 case Protocol.RequestFrom:
-                    if (parts.Length > 1) Raise(ChatRequestReceived, parts[1]);
+                    if (parts.Length > 1) ChatRequestReceived?.Invoke(parts[1]);
                     break;
                 case Protocol.RequestAccepted:
-                    if (parts.Length > 1) Raise(ChatRequestAccepted, parts[1]);
+                    if (parts.Length > 1) ChatRequestAccepted?.Invoke(parts[1]);
                     break;
                 case Protocol.RequestDeclined:
-                    if (parts.Length > 1) Raise(ChatRequestDeclined, parts[1]);
+                    if (parts.Length > 1) ChatRequestDeclined?.Invoke(parts[1]);
                     break;
                 case Protocol.Msg:
-                    if (parts.Length > 2)
-                    {
-                        string text = Protocol.DecodeText(parts[2]);
-                        Action<string, string> handler = MessageReceived;
-                        if (handler != null)
-                        {
-                            handler(parts[1], text);
-                        }
-                    }
+                    if (parts.Length > 2) MessageReceived?.Invoke(parts[1], Protocol.DecodeText(parts[2]));
                     break;
                 case Protocol.Broadcast:
-                    if (parts.Length > 2)
-                    {
-                        string text = Protocol.DecodeText(parts[2]);
-                        Action<string, string> handler = BroadcastReceived;
-                        if (handler != null)
-                        {
-                            handler(parts[1], text);
-                        }
-                    }
+                    if (parts.Length > 2) BroadcastReceived?.Invoke(parts[1], Protocol.DecodeText(parts[2]));
                     break;
             }
         }
@@ -202,30 +182,6 @@ namespace ChatApp.Core
             _active = false;
             try { if (_tcp != null) _tcp.Close(); }
             catch { }
-        }
-
-        private void Raise(Action handler)
-        {
-            if (handler != null)
-            {
-                handler();
-            }
-        }
-
-        private void Raise(Action<string> handler, string arg)
-        {
-            if (handler != null)
-            {
-                handler(arg);
-            }
-        }
-
-        private void Raise(Action<List<string>> handler, List<string> arg)
-        {
-            if (handler != null)
-            {
-                handler(arg);
-            }
         }
     }
 }

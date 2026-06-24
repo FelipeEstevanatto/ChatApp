@@ -84,6 +84,7 @@
     <Compile Include="Forms\ChatForm.Designer.cs">
       <DependentUpon>ChatForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\UiHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\ChatForm.resx">

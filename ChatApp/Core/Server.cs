@@ -28,8 +28,8 @@ namespace ChatApp.Core
         {
             Port = port;
             Manager = new ConnectionManager();
-            Manager.Log += m => { var h = Log; if (h != null) h(m); };
-            Manager.ListUpdated += list => { var h = ListUpdated; if (h != null) h(list); };
+            Manager.Log += m => Log?.Invoke(m);
+            Manager.ListUpdated += list => ListUpdated?.Invoke(list);
         }
 
         public void Start()
@@ -85,11 +85,7 @@ namespace ChatApp.Core
 
         private void RaiseLog(string message)
         {
-            Action<string> handler = Log;
-            if (handler != null)
-            {
-                handler(message);
-            }
+            Log?.Invoke(message);
         }
     }
 }

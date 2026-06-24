@@ -67,9 +67,8 @@ namespace ChatApp.Forms
 
         private void OnLog(string message)
         {
-            if (InvokeRequired)
+            if (this.MarshalToUi(() => OnLog(message)))
             {
-                BeginInvoke(new Action<string>(OnLog), message);
                 return;
             }
 
@@ -78,9 +77,8 @@ namespace ChatApp.Forms
 
         private void OnListUpdated(List<string> names)
         {
-            if (InvokeRequired)
+            if (this.MarshalToUi(() => OnListUpdated(names)))
             {
-                BeginInvoke(new Action<List<string>>(OnListUpdated), names);
                 return;
             }
 
