@@ -17,6 +17,7 @@ namespace ChatApp.Forms
         public LoginForm()
         {
             InitializeComponent();
+            txtName.MaxLength = Protocol.MaxNameLength;
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
@@ -39,10 +40,12 @@ namespace ChatApp.Forms
                 return;
             }
 
-            if (name.Length == 0)
+            if (!Protocol.IsValidName(name))
             {
-                MessageBox.Show("Informe um nome de usuario.", "Dados invalidos",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Nome de usuario invalido. Use ate " + Protocol.MaxNameLength +
+                    " caracteres e nao utilize o caractere '|'.",
+                    "Dados invalidos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 

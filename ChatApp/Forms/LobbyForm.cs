@@ -44,6 +44,52 @@ namespace ChatApp.Forms
 
             btnRequest.Enabled = false;
             lstUsers.SelectedIndexChanged += (s, e) => btnRequest.Enabled = lstUsers.SelectedItem != null;
+
+            lstUsers.DrawMode = DrawMode.OwnerDrawFixed;
+            lstUsers.ItemHeight = 24;
+            lstUsers.DrawItem += LstUsers_DrawItem;
+        }
+
+        private void LstUsers_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0)
+            {
+                return;
+            }
+
+            e.DrawBackground();
+
+            string name = lstUsers.Items[e.Index].ToString();
+            const int dotSize = 10;
+            int dotX = e.Bounds.Left + 8;
+            int dotY = e.Bounds.Top + (e.Bounds.Height - dotSize) / 2;
+
+            // Everyone shown in the list is currently connected, so the dot is green.
+            using (SolidBrush dotBrush = new SolidBrush(Color.FromArgb(46, 204, 113)))
+            {
+                e.Graphics.FillEllipse(dotBrush, dotX, dotY, dotSize, dotSize);
+            }
+
+            int textX = dotX + dotSize + 8;
+            using (SolidBrush textBrush = new SolidBrush(e.ForeColor))
+            {
+                e.Graphics.DrawString(name, e.Font, textBrush,
+                    textX, e.Bounds.Top + (e.Bounds.Height - e.Font.Height) / 2);
+            }
+
+            e.DrawFocusRectangle();
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            DialogResult answer = MessageBox.Show(
+                "Deseja realmente sair e desconectar do servidor?", "Sair",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (answer == DialogResult.Yes)
+            {
+                Close();
+            }
         }
 
         protected override void OnShown(EventArgs e)
@@ -86,39 +132,12 @@ namespace ChatApp.Forms
 
         private void AppendGlobalMessage(string sender, string text, bool isOwn)
         {
-            rtbGlobal.SelectionStart = rtbGlobal.TextLength;
-            rtbGlobal.SelectionLength = 0;
-
-            rtbGlobal.SelectionColor = isOwn
+            Color headerColor = isOwn
                 ? Color.FromArgb(0, 102, 51)
                 : Color.FromArgb(0, 51, 102);
-            rtbGlobal.SelectionFont = new Font(rtbGlobal.Font, FontStyle.Bold);
-            rtbGlobal.AppendText(string.Format("{0}  {1:HH:mm}{2}", sender, DateTime.Now, Environment.NewLine));
 
-            rtbGlobal.SelectionColor = Color.Black;
-            rtbGlobal.SelectionFont = new Font(rtbGlobal.Font, FontStyle.Regular);
-            rtbGlobal.AppendText(text + Environment.NewLine + Environment.NewLine);
-
-            rtbGlobal.SelectionStart = rtbGlobal.TextLength;
-            rtbGlobal.ScrollToCaret();
-        }
-
-        private void AppendSystemMessage(string text)
-        {
-            rtbGlobal.SelectionStart = rtbGlobal.TextLength;
-            rtbGlobal.SelectionLength = 0;
-
-            rtbGlobal.SelectionAlignment = HorizontalAlignment.Center;
-            rtbGlobal.SelectionColor = Color.Gray;
-            rtbGlobal.SelectionFont = new Font(rtbGlobal.Font, FontStyle.Italic);
-            rtbGlobal.AppendText(text + Environment.NewLine + Environment.NewLine);
-
-            rtbGlobal.SelectionAlignment = HorizontalAlignment.Left;
-            rtbGlobal.SelectionColor = Color.Black;
-            rtbGlobal.SelectionFont = new Font(rtbGlobal.Font, FontStyle.Regular);
-
-            rtbGlobal.SelectionStart = rtbGlobal.TextLength;
-            rtbGlobal.ScrollToCaret();
+            ChatView.AppendMessage(rtbGlobal, sender, text, DateTime.Now, headerColor,
+                HorizontalAlignment.Left, 0, 0, rtbGlobal.BackColor);
         }
 
         private void OnUserListUpdated(List<string> names)
@@ -169,12 +188,12 @@ namespace ChatApp.Forms
 
             foreach (string joined in others.Except(_knownUsers))
             {
-                AppendSystemMessage(joined + " entrou no saguao.");
+                ChatView.AppendSystem(rtbGlobal, joined + " entrou no saguao.");
             }
 
             foreach (string left in _knownUsers.Except(others))
             {
-                AppendSystemMessage(left + " saiu do saguao.");
+                ChatView.AppendSystem(rtbGlobal, left + " saiu do saguao.");
             }
 
             _knownUsers = others;

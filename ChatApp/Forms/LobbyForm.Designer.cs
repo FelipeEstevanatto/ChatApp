@@ -11,6 +11,7 @@ namespace ChatApp.Forms
         private System.Windows.Forms.RichTextBox rtbGlobal;
         private System.Windows.Forms.TextBox txtGlobal;
         private System.Windows.Forms.Button btnSendGlobal;
+        private System.Windows.Forms.Button btnLogout;
 
         protected override void Dispose(bool disposing)
         {
@@ -32,6 +33,7 @@ namespace ChatApp.Forms
             this.rtbGlobal = new System.Windows.Forms.RichTextBox();
             this.txtGlobal = new System.Windows.Forms.TextBox();
             this.btnSendGlobal = new System.Windows.Forms.Button();
+            this.btnLogout = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblName
@@ -122,12 +124,24 @@ namespace ChatApp.Forms
             this.btnSendGlobal.UseVisualStyleBackColor = true;
             this.btnSendGlobal.Click += new System.EventHandler(this.btnSendGlobal_Click);
             // 
+            // btnLogout
+            // 
+            this.btnLogout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLogout.Location = new System.Drawing.Point(700, 12);
+            this.btnLogout.Name = "btnLogout";
+            this.btnLogout.Size = new System.Drawing.Size(104, 32);
+            this.btnLogout.TabIndex = 8;
+            this.btnLogout.Text = "Sair";
+            this.btnLogout.UseVisualStyleBackColor = true;
+            this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
+            // 
             // LobbyForm
             // 
             this.AcceptButton = this.btnSendGlobal;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(820, 531);
+            this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.btnSendGlobal);
             this.Controls.Add(this.txtGlobal);
             this.Controls.Add(this.rtbGlobal);

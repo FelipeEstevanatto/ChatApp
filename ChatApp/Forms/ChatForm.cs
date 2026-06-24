@@ -88,7 +88,7 @@ namespace ChatApp.Forms
 
             if (!_remoteOnline)
             {
-                DisplaySystemMessage(_room.RemoteUser.Name + " esta offline - mensagem nao entregue.");
+                ChatView.AppendSystem(rtbHistory, _room.RemoteUser.Name + " esta offline - mensagem nao entregue.");
             }
 
             txtMessage.Clear();
@@ -136,55 +136,12 @@ namespace ChatApp.Forms
             int wideMargin = Math.Max(60, (int)(rtbHistory.ClientSize.Width * 0.30));
             const int narrowMargin = 12;
 
-            rtbHistory.SelectionStart = rtbHistory.TextLength;
-            rtbHistory.SelectionLength = 0;
-
-            rtbHistory.SelectionAlignment = isOwn
-                ? HorizontalAlignment.Right
-                : HorizontalAlignment.Left;
-            rtbHistory.SelectionIndent = isOwn ? wideMargin : narrowMargin;
-            rtbHistory.SelectionRightIndent = isOwn ? narrowMargin : wideMargin;
-            rtbHistory.SelectionBackColor = bubbleColor;
-
-            rtbHistory.SelectionColor = headerColor;
-            rtbHistory.SelectionFont = new Font(rtbHistory.Font, FontStyle.Bold);
-            rtbHistory.AppendText(string.Format("{0}  {1:HH:mm}{2}",
-                message.Sender, message.Timestamp, Environment.NewLine));
-
-            rtbHistory.SelectionColor = Color.Black;
-            rtbHistory.SelectionFont = new Font(rtbHistory.Font, FontStyle.Regular);
-            rtbHistory.AppendText(message.Content + Environment.NewLine);
-
-            // Spacer line between messages, without margins or bubble color.
-            rtbHistory.SelectionIndent = 0;
-            rtbHistory.SelectionRightIndent = 0;
-            rtbHistory.SelectionAlignment = HorizontalAlignment.Left;
-            rtbHistory.SelectionBackColor = rtbHistory.BackColor;
-            rtbHistory.AppendText(Environment.NewLine);
-
-            rtbHistory.SelectionStart = rtbHistory.TextLength;
-            rtbHistory.ScrollToCaret();
-        }
-
-        private void DisplaySystemMessage(string text)
-        {
-            rtbHistory.SelectionStart = rtbHistory.TextLength;
-            rtbHistory.SelectionLength = 0;
-
-            rtbHistory.SelectionIndent = 0;
-            rtbHistory.SelectionRightIndent = 0;
-            rtbHistory.SelectionBackColor = rtbHistory.BackColor;
-            rtbHistory.SelectionAlignment = HorizontalAlignment.Center;
-            rtbHistory.SelectionColor = Color.Gray;
-            rtbHistory.SelectionFont = new Font(rtbHistory.Font, FontStyle.Italic);
-            rtbHistory.AppendText(text + Environment.NewLine + Environment.NewLine);
-
-            rtbHistory.SelectionAlignment = HorizontalAlignment.Left;
-            rtbHistory.SelectionColor = Color.Black;
-            rtbHistory.SelectionFont = new Font(rtbHistory.Font, FontStyle.Regular);
-
-            rtbHistory.SelectionStart = rtbHistory.TextLength;
-            rtbHistory.ScrollToCaret();
+            ChatView.AppendMessage(rtbHistory, message.Sender, message.Content, message.Timestamp,
+                headerColor,
+                isOwn ? HorizontalAlignment.Right : HorizontalAlignment.Left,
+                isOwn ? wideMargin : narrowMargin,
+                isOwn ? narrowMargin : wideMargin,
+                bubbleColor);
         }
     }
 }

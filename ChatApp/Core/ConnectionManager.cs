@@ -65,9 +65,10 @@ namespace ChatApp.Core
 
         private void HandleLogin(ClientConnection source, string[] parts)
         {
-            if (parts.Length < 2 || string.IsNullOrWhiteSpace(parts[1]))
+            if (parts.Length < 2 || !Protocol.IsValidName(parts[1]))
             {
-                source.Send(Protocol.Build(Protocol.LoginFail, "Nome invalido"));
+                source.Send(Protocol.Build(Protocol.LoginFail,
+                    "Nome invalido (vazio, muito longo ou com caractere '|')"));
                 source.Close();
                 return;
             }

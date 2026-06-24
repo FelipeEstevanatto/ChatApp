@@ -11,6 +11,7 @@ namespace ChatApp.Core
     public static class Protocol
     {
         public const char Separator = '|';
+        public const int MaxNameLength = 20;
 
         // Commands sent from the Client to the Server
         public const string Login = "LOGIN";
@@ -27,6 +28,21 @@ namespace ChatApp.Core
         public const string RequestFrom = "REQUEST_FROM";
         public const string RequestAccepted = "REQUEST_ACCEPTED";
         public const string RequestDeclined = "REQUEST_DECLINED";
+
+        /// <summary>
+        /// Validates a user name: it must be non-empty, within the length limit and must
+        /// not contain the field separator (which is not Base64-encoded in the protocol).
+        /// </summary>
+        public static bool IsValidName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return false;
+            }
+
+            string trimmed = name.Trim();
+            return trimmed.Length <= MaxNameLength && trimmed.IndexOf(Separator) < 0;
+        }
 
         /// <summary>Builds a protocol line by joining the parts with the separator.</summary>
         public static string Build(params string[] parts)
