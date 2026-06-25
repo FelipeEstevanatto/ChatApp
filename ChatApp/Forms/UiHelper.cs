@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -42,17 +43,54 @@ namespace ChatApp.Forms
             }
 
             richTextBox.DetectUrls = true;
-            richTextBox.LinkClicked += (sender, e) =>
+            richTextBox.LinkClicked += (sender, e) => OpenLink(e.LinkText);
+        }
+
+        private static void OpenLink(string link)
+        {
+            string url = NormalizeUrl(link);
+            if (string.IsNullOrEmpty(url))
             {
-                try
-                {
-                    System.Diagnostics.Process.Start(e.LinkText);
-                }
-                catch
-                {
-                    // Could not launch a browser; ignore.
-                }
-            };
+                return;
+            }
+
+            try
+            {
+                // UseShellExecute = true asks the OS to open the URL with the default
+                // browser. It is the default on .NET Framework, but we set it explicitly
+                // so the behavior is unambiguous (and correct on newer runtimes too).
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Nao foi possivel abrir o link:\n" + url + "\n\nDetalhe: " + ex.Message,
+                    "Erro ao abrir link", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        /// <summary>
+        /// Ensures the URL has a scheme. RichTextBox detects links such as
+        /// "www.site.com" without a scheme, and the shell cannot open those, so a
+        /// default "http://" is prepended when none is present.
+        /// </summary>
+        private static string NormalizeUrl(string link)
+        {
+            if (string.IsNullOrWhiteSpace(link))
+            {
+                return null;
+            }
+
+            string url = link.Trim();
+
+            // Leave explicit schemes untouched (http, https, ftp, mailto, etc.).
+            if (url.IndexOf("://", StringComparison.Ordinal) >= 0 ||
+                url.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase))
+            {
+                return url;
+            }
+
+            return "http://" + url;
         }
 
         private const int EM_SETCUEBANNER = 0x1501;
