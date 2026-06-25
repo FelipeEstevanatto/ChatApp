@@ -1,23 +1,16 @@
 using System;
-using System.IO;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 
 namespace ChatApp.Core
 {
     /// <summary>
-    /// Wraps, on the server side, the TCP connection of a single client.
-    /// It owns its reading thread and exposes events for the connection manager.
+    /// Represents, on the server side, a single connected client. It adds the
+    /// authentication state (user name) on top of a <see cref="LineChannel"/> and
+    /// re-exposes the transport events in terms of this connection.
     /// </summary>
     public class ClientConnection
     {
-        private readonly TcpClient _tcp;
-        private readonly StreamReader _reader;
-        private readonly StreamWriter _writer;
-        private readonly object _sendLock = new object();
-        private Thread _thread;
-        private volatile bool _active;
+        private readonly LineChannel _channel;
 
         /// <summary>User name after login. Null while not authenticated.</summary>
         public string Username { get; private set; }
@@ -32,18 +25,14 @@ namespace ChatApp.Core
 
         public ClientConnection(TcpClient tcp)
         {
-            _tcp = tcp;
-            NetworkUtil.EnableKeepAlive(_tcp.Client);
-            NetworkStream stream = _tcp.GetStream();
-            _reader = new StreamReader(stream, Encoding.UTF8);
-            _writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
+            _channel = new LineChannel(tcp);
+            _channel.LineReceived += OnLineReceived;
+            _channel.Closed += OnClosed;
         }
 
         public void Start()
         {
-            _active = true;
-            _thread = new Thread(ReadLoop) { IsBackground = true };
-            _thread.Start();
+            _channel.Start();
         }
 
         public void SetName(string name)
@@ -51,64 +40,24 @@ namespace ChatApp.Core
             Username = name;
         }
 
-        private void ReadLoop()
-        {
-            try
-            {
-                while (_active)
-                {
-                    string line = _reader.ReadLine();
-                    if (line == null)
-                    {
-                        break;
-                    }
-
-                    if (line.Length == 0)
-                    {
-                        continue;
-                    }
-
-                    MessageReceived?.Invoke(this, Protocol.Parse(line));
-                }
-            }
-            catch
-            {
-                // Connection lost or closed: handled in finally.
-            }
-            finally
-            {
-                Close();
-            }
-        }
-
         /// <summary>Sends a protocol line to this client.</summary>
         public void Send(string line)
         {
-            try
-            {
-                lock (_sendLock)
-                {
-                    _writer.WriteLine(line);
-                }
-            }
-            catch
-            {
-                Close();
-            }
+            _channel.Send(line);
         }
 
         public void Close()
         {
-            if (!_active)
-            {
-                return;
-            }
+            _channel.Close();
+        }
 
-            _active = false;
+        private void OnLineReceived(string line)
+        {
+            MessageReceived?.Invoke(this, Protocol.Parse(line));
+        }
 
-            try { _tcp.Close(); }
-            catch { }
-
+        private void OnClosed()
+        {
             Disconnected?.Invoke(this);
         }
     }

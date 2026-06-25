@@ -8,20 +8,26 @@ namespace ChatApp.Core
     /// </summary>
     public class ChatRoom
     {
+        private readonly List<ChatMessage> _history = new List<ChatMessage>();
+
         public User LocalUser { get; private set; }
         public User RemoteUser { get; private set; }
-        public List<ChatMessage> History { get; private set; }
+
+        /// <summary>Read-only view of the messages exchanged in this session.</summary>
+        public IReadOnlyList<ChatMessage> History
+        {
+            get { return _history; }
+        }
 
         public ChatRoom(User localUser, User remoteUser)
         {
             LocalUser = localUser;
             RemoteUser = remoteUser;
-            History = new List<ChatMessage>();
         }
 
         public void Add(ChatMessage message)
         {
-            History.Add(message);
+            _history.Add(message);
         }
     }
 }

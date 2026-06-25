@@ -139,9 +139,7 @@ namespace ChatApp.Forms
 
         private void AppendGlobalMessage(string sender, string text, bool isOwn)
         {
-            Color headerColor = isOwn
-                ? Color.FromArgb(0, 102, 51)
-                : Color.FromArgb(0, 51, 102);
+            Color headerColor = isOwn ? Theme.OwnHeader : Theme.PeerHeader;
 
             ChatView.AppendMessage(rtbGlobal, sender, text, DateTime.Now, headerColor,
                 HorizontalAlignment.Left, 0, 0, rtbGlobal.BackColor);

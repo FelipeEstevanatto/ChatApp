@@ -59,7 +59,7 @@ namespace ChatApp.Forms
             rtb.SelectionFont = fonts.Bold;
             rtb.AppendText(string.Format("{0}  {1:HH:mm}{2}", sender, time, Environment.NewLine));
 
-            rtb.SelectionColor = Color.Black;
+            rtb.SelectionColor = Theme.MessageBody;
             rtb.SelectionFont = fonts.Regular;
             rtb.AppendText(content + Environment.NewLine);
 
@@ -86,12 +86,12 @@ namespace ChatApp.Forms
             rtb.SelectionRightIndent = 0;
             rtb.SelectionBackColor = rtb.BackColor;
             rtb.SelectionAlignment = HorizontalAlignment.Center;
-            rtb.SelectionColor = Color.Gray;
+            rtb.SelectionColor = Theme.SystemNotice;
             rtb.SelectionFont = fonts.Italic;
             rtb.AppendText(text + Environment.NewLine + Environment.NewLine);
 
             rtb.SelectionAlignment = HorizontalAlignment.Left;
-            rtb.SelectionColor = Color.Black;
+            rtb.SelectionColor = Theme.MessageBody;
             rtb.SelectionFont = fonts.Regular;
 
             rtb.SelectionStart = rtb.TextLength;

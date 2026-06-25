@@ -65,9 +65,7 @@ namespace ChatApp.Forms
 
             _remoteOnline = online;
             lblHeaderStatus.Text = online ? "online" : "offline";
-            lblHeaderStatus.ForeColor = online
-                ? Color.FromArgb(190, 225, 212)
-                : Color.FromArgb(214, 188, 188);
+            lblHeaderStatus.ForeColor = online ? Theme.StatusOnline : Theme.StatusOffline;
             lblHeaderDot.ForeColor = online
                 ? Color.FromArgb(120, 220, 150)
                 : Color.FromArgb(214, 188, 188);
@@ -165,12 +163,8 @@ namespace ChatApp.Forms
 
         private void DisplayMessage(ChatMessage message, bool isOwn)
         {
-            Color bubbleColor = isOwn
-                ? Color.FromArgb(220, 248, 198)
-                : Color.White;
-            Color headerColor = isOwn
-                ? Color.FromArgb(0, 102, 51)
-                : Color.FromArgb(0, 51, 102);
+            Color bubbleColor = isOwn ? Theme.OwnBubble : Theme.PeerBubble;
+            Color headerColor = isOwn ? Theme.OwnHeader : Theme.PeerHeader;
 
             // Lateral margins: the message occupies roughly 70% of the width on its
             // side, leaving a gap on the opposite side (wide margin) and a small gap

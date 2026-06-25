@@ -1,28 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 
 namespace ChatApp.Core
 {
     /// <summary>
-    /// Client side of the communication. Connects to the server, reads messages on a
-    /// dedicated thread and raises events for the user interface to react to.
-    /// IMPORTANT: events are raised on the reading thread; the UI must use
-    /// Invoke/BeginInvoke when handling them.
+    /// Client side of the communication. Connects to the server and translates the
+    /// lines received over a <see cref="LineChannel"/> into higher-level events for the
+    /// user interface to react to.
+    /// IMPORTANT: events are raised on the reading thread; the UI must marshal them.
     /// </summary>
     public class NetworkClient
     {
-        private TcpClient _tcp;
-        private StreamReader _reader;
-        private StreamWriter _writer;
-        private readonly object _sendLock = new object();
+        private LineChannel _channel;
         private readonly object _listLock = new object();
         private List<string> _lastList = new List<string>();
-        private Thread _thread;
-        private volatile bool _active;
 
         private const int ConnectTimeoutMs = 5000;
 
@@ -33,11 +25,7 @@ namespace ChatApp.Core
         /// <summary>Resolved remote endpoint (IP:port), or null if not connected.</summary>
         public string RemoteEndPoint
         {
-            get
-            {
-                try { return _tcp != null && _tcp.Client != null ? _tcp.Client.RemoteEndPoint.ToString() : null; }
-                catch { return null; }
-            }
+            get { return _channel != null ? _channel.RemoteEndPoint : null; }
         }
 
         public event Action LoginOk;
@@ -53,11 +41,11 @@ namespace ChatApp.Core
 
         public void Connect(string host, int port, string name)
         {
-            _tcp = new TcpClient();
+            TcpClient tcp = new TcpClient();
 
             // Connect with a timeout so an unreachable/unresponsive host does not block
             // the caller for the full OS-level TCP timeout (~20s).
-            IAsyncResult ar = _tcp.BeginConnect(host, port, null, null);
+            IAsyncResult ar = tcp.BeginConnect(host, port, null, null);
             try
             {
                 if (!ar.AsyncWaitHandle.WaitOne(ConnectTimeoutMs))
@@ -68,60 +56,34 @@ namespace ChatApp.Core
                 }
 
                 // Observes connection errors (e.g. connection refused).
-                _tcp.EndConnect(ar);
+                tcp.EndConnect(ar);
             }
             catch
             {
-                try { _tcp.Close(); } catch { }
-                _tcp = null;
+                try { tcp.Close(); } catch { }
                 throw;
             }
 
-            NetworkUtil.EnableKeepAlive(_tcp.Client);
-
-            NetworkStream stream = _tcp.GetStream();
-            _reader = new StreamReader(stream, Encoding.UTF8);
-            _writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
             Username = name;
             ServerHost = host;
             ServerPort = port;
 
-            _active = true;
-            _thread = new Thread(ReadLoop) { IsBackground = true };
-            _thread.Start();
+            _channel = new LineChannel(tcp);
+            _channel.LineReceived += OnLineReceived;
+            _channel.Closed += OnChannelClosed;
+            _channel.Start();
 
             Send(Protocol.Build(Protocol.Login, name));
         }
 
-        private void ReadLoop()
+        private void OnLineReceived(string line)
         {
-            try
-            {
-                while (_active)
-                {
-                    string line = _reader.ReadLine();
-                    if (line == null)
-                    {
-                        break;
-                    }
+            Process(Protocol.Parse(line));
+        }
 
-                    if (line.Length == 0)
-                    {
-                        continue;
-                    }
-
-                    Process(Protocol.Parse(line));
-                }
-            }
-            catch
-            {
-                // Connection closed.
-            }
-            finally
-            {
-                _active = false;
-                Disconnected?.Invoke();
-            }
+        private void OnChannelClosed()
+        {
+            Disconnected?.Invoke();
         }
 
         private void Process(string[] parts)
@@ -169,16 +131,9 @@ namespace ChatApp.Core
 
         public void Send(string line)
         {
-            try
+            if (_channel != null)
             {
-                lock (_sendLock)
-                {
-                    _writer.WriteLine(line);
-                }
-            }
-            catch
-            {
-                Disconnect();
+                _channel.Send(line);
             }
         }
 
@@ -222,14 +177,10 @@ namespace ChatApp.Core
 
         public void Disconnect()
         {
-            if (!_active && _tcp == null)
+            if (_channel != null)
             {
-                return;
+                _channel.Close();
             }
-
-            _active = false;
-            try { if (_tcp != null) _tcp.Close(); }
-            catch { }
         }
     }
 }

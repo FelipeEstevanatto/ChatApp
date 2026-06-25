@@ -25,6 +25,16 @@ namespace ChatApp.Forms
         public static readonly Color SurfaceBorder = Color.FromArgb(206, 206, 206);
         public static readonly Color OnSurface = Color.FromArgb(51, 51, 51);
 
+        // Chat rendering — message bubbles, sender headers and presence status.
+        public static readonly Color OwnBubble = Color.FromArgb(220, 248, 198);
+        public static readonly Color PeerBubble = Color.White;
+        public static readonly Color OwnHeader = Color.FromArgb(0, 102, 51);
+        public static readonly Color PeerHeader = Color.FromArgb(0, 51, 102);
+        public static readonly Color MessageBody = Color.Black;
+        public static readonly Color SystemNotice = Color.Gray;
+        public static readonly Color StatusOnline = Color.FromArgb(190, 225, 212);
+        public static readonly Color StatusOffline = Color.FromArgb(214, 188, 188);
+
         /// <summary>Filled accent buttons for primary actions (send, connect, etc.).</summary>
         public static void StylePrimary(params Button[] buttons)
         {

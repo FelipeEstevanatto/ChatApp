@@ -102,9 +102,8 @@ namespace ChatApp.Forms
 
         private void OnLoginOk()
         {
-            if (InvokeRequired)
+            if (this.MarshalToUi(OnLoginOk))
             {
-                BeginInvoke(new Action(OnLoginOk));
                 return;
             }
 
@@ -116,9 +115,8 @@ namespace ChatApp.Forms
 
         private void OnLoginFailed(string reason)
         {
-            if (InvokeRequired)
+            if (this.MarshalToUi(() => OnLoginFailed(reason)))
             {
-                BeginInvoke(new Action<string>(OnLoginFailed), reason);
                 return;
             }
 
