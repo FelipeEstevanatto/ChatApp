@@ -30,6 +30,31 @@ namespace ChatApp.Forms
             return false;
         }
 
+        /// <summary>
+        /// Enables automatic URL detection in a RichTextBox and opens clicked links in
+        /// the system's default browser.
+        /// </summary>
+        public static void EnableClickableLinks(this RichTextBox richTextBox)
+        {
+            if (richTextBox == null)
+            {
+                return;
+            }
+
+            richTextBox.DetectUrls = true;
+            richTextBox.LinkClicked += (sender, e) =>
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start(e.LinkText);
+                }
+                catch
+                {
+                    // Could not launch a browser; ignore.
+                }
+            };
+        }
+
         private const int EM_SETCUEBANNER = 0x1501;
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]

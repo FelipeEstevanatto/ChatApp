@@ -12,6 +12,8 @@ namespace ChatApp.Forms
         private System.Windows.Forms.TextBox txtGlobal;
         private System.Windows.Forms.Button btnSendGlobal;
         private System.Windows.Forms.Button btnLogout;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel lblStatus;
 
         protected override void Dispose(bool disposing)
         {
@@ -34,6 +36,9 @@ namespace ChatApp.Forms
             this.txtGlobal = new System.Windows.Forms.TextBox();
             this.btnSendGlobal = new System.Windows.Forms.Button();
             this.btnLogout = new System.Windows.Forms.Button();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblName
@@ -64,14 +69,14 @@ namespace ChatApp.Forms
             this.lstUsers.ItemHeight = 16;
             this.lstUsers.Location = new System.Drawing.Point(20, 78);
             this.lstUsers.Name = "lstUsers";
-            this.lstUsers.Size = new System.Drawing.Size(300, 372);
+            this.lstUsers.Size = new System.Drawing.Size(300, 400);
             this.lstUsers.TabIndex = 2;
             this.lstUsers.DoubleClick += new System.EventHandler(this.lstUsers_DoubleClick);
             // 
             // btnRequest
             // 
             this.btnRequest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRequest.Location = new System.Drawing.Point(20, 460);
+            this.btnRequest.Location = new System.Drawing.Point(20, 489);
             this.btnRequest.Name = "btnRequest";
             this.btnRequest.Size = new System.Drawing.Size(300, 50);
             this.btnRequest.TabIndex = 3;
@@ -99,7 +104,7 @@ namespace ChatApp.Forms
             this.rtbGlobal.Location = new System.Drawing.Point(348, 78);
             this.rtbGlobal.Name = "rtbGlobal";
             this.rtbGlobal.ReadOnly = true;
-            this.rtbGlobal.Size = new System.Drawing.Size(452, 372);
+            this.rtbGlobal.Size = new System.Drawing.Size(452, 400);
             this.rtbGlobal.TabIndex = 5;
             this.rtbGlobal.Text = "";
             // 
@@ -108,7 +113,7 @@ namespace ChatApp.Forms
             this.txtGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtGlobal.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtGlobal.Location = new System.Drawing.Point(348, 464);
+            this.txtGlobal.Location = new System.Drawing.Point(348, 494);
             this.txtGlobal.Name = "txtGlobal";
             this.txtGlobal.Size = new System.Drawing.Size(328, 30);
             this.txtGlobal.TabIndex = 6;
@@ -116,7 +121,7 @@ namespace ChatApp.Forms
             // btnSendGlobal
             // 
             this.btnSendGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSendGlobal.Location = new System.Drawing.Point(688, 461);
+            this.btnSendGlobal.Location = new System.Drawing.Point(688, 491);
             this.btnSendGlobal.Name = "btnSendGlobal";
             this.btnSendGlobal.Size = new System.Drawing.Size(112, 36);
             this.btnSendGlobal.TabIndex = 7;
@@ -135,12 +140,29 @@ namespace ChatApp.Forms
             this.btnLogout.UseVisualStyleBackColor = true;
             this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
             // 
+            // statusStrip
+            // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblStatus});
+            this.statusStrip.Location = new System.Drawing.Point(0, 543);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(820, 22);
+            this.statusStrip.SizingGrip = false;
+            this.statusStrip.TabIndex = 9;
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(79, 17);
+            this.lblStatus.Text = "Conectando...";
+            // 
             // LobbyForm
             // 
             this.AcceptButton = this.btnSendGlobal;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(820, 531);
+            this.ClientSize = new System.Drawing.Size(820, 565);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.btnSendGlobal);
             this.Controls.Add(this.txtGlobal);
@@ -152,10 +174,12 @@ namespace ChatApp.Forms
             this.Controls.Add(this.lblName);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(620, 470);
+            this.MinimumSize = new System.Drawing.Size(620, 504);
             this.Name = "LobbyForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ChatApp - Saguao";
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }

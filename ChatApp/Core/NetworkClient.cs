@@ -27,6 +27,18 @@ namespace ChatApp.Core
         private const int ConnectTimeoutMs = 5000;
 
         public string Username { get; private set; }
+        public string ServerHost { get; private set; }
+        public int ServerPort { get; private set; }
+
+        /// <summary>Resolved remote endpoint (IP:port), or null if not connected.</summary>
+        public string RemoteEndPoint
+        {
+            get
+            {
+                try { return _tcp != null && _tcp.Client != null ? _tcp.Client.RemoteEndPoint.ToString() : null; }
+                catch { return null; }
+            }
+        }
 
         public event Action LoginOk;
         public event Action<string> LoginFailed;
@@ -71,6 +83,8 @@ namespace ChatApp.Core
             _reader = new StreamReader(stream, Encoding.UTF8);
             _writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
             Username = name;
+            ServerHost = host;
+            ServerPort = port;
 
             _active = true;
             _thread = new Thread(ReadLoop) { IsBackground = true };

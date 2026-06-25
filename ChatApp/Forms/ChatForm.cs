@@ -31,6 +31,8 @@ namespace ChatApp.Forms
 
             btnSend.Enabled = false;
             txtMessage.TextChanged += (s, e) => btnSend.Enabled = txtMessage.Text.Trim().Length > 0;
+
+            rtbHistory.EnableClickableLinks();
         }
 
         protected override void OnShown(EventArgs e)

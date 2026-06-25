@@ -48,6 +48,8 @@ namespace ChatApp.Forms
             btnRequest.Enabled = false;
             lstUsers.SelectedIndexChanged += (s, e) => btnRequest.Enabled = lstUsers.SelectedItem != null;
 
+            rtbGlobal.EnableClickableLinks();
+
             lstUsers.DrawMode = DrawMode.OwnerDrawFixed;
             lstUsers.ItemHeight = 24;
             lstUsers.DrawItem += LstUsers_DrawItem;
@@ -99,6 +101,8 @@ namespace ChatApp.Forms
         {
             base.OnShown(e);
             txtGlobal.SetCueBanner("Digite uma mensagem para todos...");
+            string endpoint = _client.RemoteEndPoint ?? (_client.ServerHost + ":" + _client.ServerPort);
+            lblStatus.Text = "Conectado a " + endpoint + " como " + _localName;
             OnUserListUpdated(_client.GetLastUserList());
             txtGlobal.Focus();
         }
