@@ -25,6 +25,8 @@ namespace ChatApp.Forms
         public LobbyForm(NetworkClient client, string localName)
         {
             InitializeComponent();
+            Theme.StylePrimary(btnSendGlobal, btnRequest);
+            Theme.StyleSecondary(btnLogout);
 
             _client = client;
             _localName = localName;

@@ -11,6 +11,7 @@ namespace ChatApp.Forms
         public StartForm()
         {
             InitializeComponent();
+            Theme.StylePrimary(btnServer, btnClient);
         }
 
         private void btnServer_Click(object sender, EventArgs e)

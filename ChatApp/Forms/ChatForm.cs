@@ -20,6 +20,7 @@ namespace ChatApp.Forms
         public ChatForm(NetworkClient client, string localName, string remoteName)
         {
             InitializeComponent();
+            Theme.StylePrimary(btnSend);
 
             _client = client;
             _room = new ChatRoom(new User(localName), new User(remoteName));
@@ -113,7 +114,7 @@ namespace ChatApp.Forms
 
             if (!_remoteOnline)
             {
-                ChatView.AppendSystem(rtbHistory, _room.RemoteUser.Name + " esta offline - mensagem nao entregue.");
+                ChatView.AppendSystem(rtbHistory, _room.RemoteUser.Name + " esta offline - mensagem não entregue.");
             }
 
             txtMessage.Clear();

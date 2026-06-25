@@ -24,6 +24,8 @@ namespace ChatApp.Core
         private Thread _thread;
         private volatile bool _active;
 
+        private const int ConnectTimeoutMs = 5000;
+
         public string Username { get; private set; }
 
         public event Action LoginOk;
@@ -40,7 +42,29 @@ namespace ChatApp.Core
         public void Connect(string host, int port, string name)
         {
             _tcp = new TcpClient();
-            _tcp.Connect(host, port);
+
+            // Connect with a timeout so an unreachable/unresponsive host does not block
+            // the caller for the full OS-level TCP timeout (~20s).
+            IAsyncResult ar = _tcp.BeginConnect(host, port, null, null);
+            try
+            {
+                if (!ar.AsyncWaitHandle.WaitOne(ConnectTimeoutMs))
+                {
+                    throw new TimeoutException(
+                        "O servidor não respondeu dentro de " + (ConnectTimeoutMs / 1000) +
+                        " segundos. Verifique o endereco e a porta.");
+                }
+
+                // Observes connection errors (e.g. connection refused).
+                _tcp.EndConnect(ar);
+            }
+            catch
+            {
+                try { _tcp.Close(); } catch { }
+                _tcp = null;
+                throw;
+            }
+
             NetworkUtil.EnableKeepAlive(_tcp.Client);
 
             NetworkStream stream = _tcp.GetStream();

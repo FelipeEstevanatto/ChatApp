@@ -24,6 +24,12 @@ namespace ChatApp.Core
         public event Action<string> Log;
         public event Action<List<string>> ListUpdated;
 
+        /// <summary>
+        /// Raised when the server stops accepting connections because of an unexpected
+        /// error (not a normal <see cref="Stop"/>). Carries the error description.
+        /// </summary>
+        public event Action<string> StoppedUnexpectedly;
+
         public Server(int port)
         {
             Port = port;
@@ -61,9 +67,16 @@ namespace ChatApp.Core
                     RaiseLog("Nova conexao recebida, aguardando login.");
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Listener stopped: normal shutdown.
+                // When _active is false the failure comes from Stop() closing the
+                // listener (normal shutdown). Otherwise the server died unexpectedly
+                // and the UI must be told, so it does not keep showing "running".
+                if (_active)
+                {
+                    RaiseLog("Servidor interrompido por erro: " + ex.Message);
+                    StoppedUnexpectedly?.Invoke(ex.Message);
+                }
             }
         }
 

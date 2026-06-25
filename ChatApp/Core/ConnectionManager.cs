@@ -71,7 +71,7 @@ namespace ChatApp.Core
             if (parts.Length < 2 || !Protocol.IsValidName(parts[1]))
             {
                 source.Send(Protocol.Build(Protocol.LoginFail,
-                    "Nome invalido (vazio, muito longo ou com caractere '|')"));
+                    "Nome inválido (vazio, muito longo ou com caractere '|')"));
                 source.Close();
                 return;
             }

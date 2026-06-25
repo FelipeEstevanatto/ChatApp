@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Net.Sockets;
 using System.Windows.Forms;
 using ChatApp.Core;
 
@@ -20,6 +21,8 @@ namespace ChatApp.Forms
         public ServerForm()
         {
             InitializeComponent();
+            Theme.StylePrimary(btnStartStop);
+            Theme.StyleSecondary(btnClearLog);
         }
 
         private void SetStatus(bool running, int port)
@@ -56,24 +59,48 @@ namespace ChatApp.Forms
                 _server = new Server(port);
                 _server.Log += OnLog;
                 _server.ListUpdated += OnListUpdated;
+                _server.StoppedUnexpectedly += OnStoppedUnexpectedly;
                 _server.Start();
 
                 txtPort.Enabled = false;
                 btnStartStop.Text = "Parar Servidor";
                 SetStatus(true, port);
             }
+            catch (SocketException sx) when (sx.SocketErrorCode == SocketError.AddressAlreadyInUse)
+            {
+                MessageBox.Show(
+                    "A porta " + port + " ja esta em uso. Feche o outro programa que a utiliza " +
+                    "ou escolha outra porta.",
+                    "Porta em uso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                _server = null;
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Nao foi possivel iniciar o servidor:\n" + ex.Message, "Erro",
+                MessageBox.Show("Não foi possivel iniciar o servidor:\n" + ex.Message, "Erro",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _server = null;
             }
+        }
+
+        private void OnStoppedUnexpectedly(string reason)
+        {
+            if (this.MarshalToUi(() => OnStoppedUnexpectedly(reason)))
+            {
+                return;
+            }
+
+            StopServer();
+            MessageBox.Show("O servidor foi interrompido por um erro:\n" + reason, "Servidor parado",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void StopServer()
         {
             if (_server != null)
             {
+                _server.StoppedUnexpectedly -= OnStoppedUnexpectedly;
+                _server.Log -= OnLog;
+                _server.ListUpdated -= OnListUpdated;
                 _server.Stop();
                 _server = null;
             }

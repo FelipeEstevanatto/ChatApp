@@ -17,6 +17,7 @@ namespace ChatApp.Forms
         public LoginForm()
         {
             InitializeComponent();
+            Theme.StylePrimary(btnConnect);
             txtName.MaxLength = Protocol.MaxNameLength;
         }
 
@@ -44,7 +45,7 @@ namespace ChatApp.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Nao foi possivel conectar ao servidor:\n" + ex.Message, "Erro de conexao",
+                MessageBox.Show("Não foi possivel conectar ao servidor:\n" + ex.Message, "Erro de conexao",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Client = null;
                 SetConnecting(false);
@@ -79,8 +80,8 @@ namespace ChatApp.Forms
             if (!Protocol.IsValidName(name))
             {
                 errorProvider.SetError(txtName,
-                    "Nome invalido. Use ate " + Protocol.MaxNameLength +
-                    " caracteres e nao utilize o caractere '|'.");
+                    "Nome inválido. Use ate " + Protocol.MaxNameLength +
+                    " caracteres e não utilize o caractere '|'.");
                 firstInvalid = firstInvalid ?? txtName;
             }
 
