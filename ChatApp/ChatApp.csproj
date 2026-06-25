@@ -54,6 +54,7 @@
     <Compile Include="Core\ConnectionManager.cs" />
     <Compile Include="Core\Server.cs" />
     <Compile Include="Core\NetworkClient.cs" />
+    <Compile Include="Core\NetworkUtil.cs" />
     <Compile Include="Core\ChatRoom.cs" />
     <Compile Include="Forms\StartForm.cs">
       <SubType>Form</SubType>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using ChatApp.Core;
 
@@ -11,11 +12,27 @@ namespace ChatApp.Forms
     /// </summary>
     public partial class ServerForm : Form
     {
+        private static readonly Color RunningColor = Color.FromArgb(39, 174, 96);
+        private static readonly Color StoppedColor = Color.FromArgb(192, 57, 43);
+
         private Server _server;
 
         public ServerForm()
         {
             InitializeComponent();
+        }
+
+        private void SetStatus(bool running, int port)
+        {
+            lblStatus.Text = running
+                ? "\u25CF Rodando (porta " + port + ")"
+                : "\u25CF Parado";
+            lblStatus.ForeColor = running ? RunningColor : StoppedColor;
+        }
+
+        private void btnClearLog_Click(object sender, EventArgs e)
+        {
+            txtLog.Clear();
         }
 
         private void btnStartStop_Click(object sender, EventArgs e)
@@ -43,6 +60,7 @@ namespace ChatApp.Forms
 
                 txtPort.Enabled = false;
                 btnStartStop.Text = "Parar Servidor";
+                SetStatus(true, port);
             }
             catch (Exception ex)
             {
@@ -62,6 +80,7 @@ namespace ChatApp.Forms
 
             txtPort.Enabled = true;
             btnStartStop.Text = "Iniciar Servidor";
+            SetStatus(false, 0);
             lstClients.Items.Clear();
         }
 

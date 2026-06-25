@@ -20,6 +20,7 @@ namespace ChatApp.Core
         public const string Decline = "DECLINE";
         public const string Msg = "MSG";
         public const string Broadcast = "BROADCAST";
+        public const string LeaveChat = "LEAVE";
 
         // Commands sent from the Server to the Client
         public const string LoginOk = "LOGIN_OK";
@@ -28,6 +29,7 @@ namespace ChatApp.Core
         public const string RequestFrom = "REQUEST_FROM";
         public const string RequestAccepted = "REQUEST_ACCEPTED";
         public const string RequestDeclined = "REQUEST_DECLINED";
+        public const string ChatClosed = "CHAT_CLOSED";
 
         /// <summary>
         /// Validates a user name: it must be non-empty, within the length limit and must

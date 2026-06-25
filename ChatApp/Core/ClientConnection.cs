@@ -33,6 +33,7 @@ namespace ChatApp.Core
         public ClientConnection(TcpClient tcp)
         {
             _tcp = tcp;
+            NetworkUtil.EnableKeepAlive(_tcp.Client);
             NetworkStream stream = _tcp.GetStream();
             _reader = new StreamReader(stream, Encoding.UTF8);
             _writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };

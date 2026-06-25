@@ -34,12 +34,14 @@ namespace ChatApp.Core
         public event Action<string> ChatRequestDeclined;
         public event Action<string, string> MessageReceived;
         public event Action<string, string> BroadcastReceived;
+        public event Action<string> ChatClosedByPeer;
         public event Action Disconnected;
 
         public void Connect(string host, int port, string name)
         {
             _tcp = new TcpClient();
             _tcp.Connect(host, port);
+            NetworkUtil.EnableKeepAlive(_tcp.Client);
 
             NetworkStream stream = _tcp.GetStream();
             _reader = new StreamReader(stream, Encoding.UTF8);
@@ -121,6 +123,9 @@ namespace ChatApp.Core
                 case Protocol.Broadcast:
                     if (parts.Length > 2) BroadcastReceived?.Invoke(parts[1], Protocol.DecodeText(parts[2]));
                     break;
+                case Protocol.ChatClosed:
+                    if (parts.Length > 1) ChatClosedByPeer?.Invoke(parts[1]);
+                    break;
             }
         }
 
@@ -170,6 +175,11 @@ namespace ChatApp.Core
         public void SendBroadcast(string text)
         {
             Send(Protocol.Build(Protocol.Broadcast, Protocol.EncodeText(text)));
+        }
+
+        public void SendLeaveChat(string target)
+        {
+            Send(Protocol.Build(Protocol.LeaveChat, target));
         }
 
         public void Disconnect()

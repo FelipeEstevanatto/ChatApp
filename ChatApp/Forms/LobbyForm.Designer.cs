@@ -150,6 +150,7 @@ namespace ChatApp.Forms
             this.Controls.Add(this.lstUsers);
             this.Controls.Add(this.lblUsers);
             this.Controls.Add(this.lblName);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(620, 470);
             this.Name = "LobbyForm";

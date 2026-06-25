@@ -26,30 +26,12 @@ namespace ChatApp.Forms
             string name = txtName.Text.Trim();
             int port;
 
-            if (host.Length == 0)
+            if (!ValidateInput(host, name, out port))
             {
-                MessageBox.Show("Informe o endereco do servidor.", "Dados invalidos",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (!int.TryParse(txtPort.Text.Trim(), out port) || port < 1 || port > 65535)
-            {
-                MessageBox.Show("Informe uma porta valida (1-65535).", "Dados invalidos",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (!Protocol.IsValidName(name))
-            {
-                MessageBox.Show(
-                    "Nome de usuario invalido. Use ate " + Protocol.MaxNameLength +
-                    " caracteres e nao utilize o caractere '|'.",
-                    "Dados invalidos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            SetControlsEnabled(false);
+            SetConnecting(true);
 
             Client = new NetworkClient();
             Client.LoginOk += OnLoginOk;
@@ -65,8 +47,56 @@ namespace ChatApp.Forms
                 MessageBox.Show("Nao foi possivel conectar ao servidor:\n" + ex.Message, "Erro de conexao",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Client = null;
-                SetControlsEnabled(true);
+                SetConnecting(false);
             }
+        }
+
+        /// <summary>
+        /// Validates the fields and shows inline error icons next to the offending
+        /// control. Returns true only when every field is valid.
+        /// </summary>
+        private bool ValidateInput(string host, string name, out int port)
+        {
+            errorProvider.SetError(txtHost, string.Empty);
+            errorProvider.SetError(txtPort, string.Empty);
+            errorProvider.SetError(txtName, string.Empty);
+
+            port = 0;
+            Control firstInvalid = null;
+
+            if (host.Length == 0)
+            {
+                errorProvider.SetError(txtHost, "Informe o endereco do servidor.");
+                firstInvalid = firstInvalid ?? txtHost;
+            }
+
+            if (!int.TryParse(txtPort.Text.Trim(), out port) || port < 1 || port > 65535)
+            {
+                errorProvider.SetError(txtPort, "Informe uma porta valida (1-65535).");
+                firstInvalid = firstInvalid ?? txtPort;
+            }
+
+            if (!Protocol.IsValidName(name))
+            {
+                errorProvider.SetError(txtName,
+                    "Nome invalido. Use ate " + Protocol.MaxNameLength +
+                    " caracteres e nao utilize o caractere '|'.");
+                firstInvalid = firstInvalid ?? txtName;
+            }
+
+            if (firstInvalid != null)
+            {
+                firstInvalid.Focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        private void SetConnecting(bool connecting)
+        {
+            SetControlsEnabled(!connecting);
+            btnConnect.Text = connecting ? "Conectando..." : "Conectar";
         }
 
         private void OnLoginOk()
@@ -98,7 +128,7 @@ namespace ChatApp.Forms
 
             MessageBox.Show("Falha no login: " + reason, "Login recusado",
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            SetControlsEnabled(true);
+            SetConnecting(false);
         }
 
         private void SetControlsEnabled(bool enabled)

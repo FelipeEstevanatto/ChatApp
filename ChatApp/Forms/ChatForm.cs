@@ -65,11 +65,36 @@ namespace ChatApp.Forms
             lblHeaderStatus.ForeColor = online
                 ? Color.FromArgb(190, 225, 212)
                 : Color.FromArgb(214, 188, 188);
+            lblHeaderDot.ForeColor = online
+                ? Color.FromArgb(120, 220, 150)
+                : Color.FromArgb(214, 188, 188);
+        }
+
+        /// <summary>Called when the remote user closes this private conversation.</summary>
+        public void NotifyRemoteLeft()
+        {
+            if (this.MarshalToUi(NotifyRemoteLeft))
+            {
+                return;
+            }
+
+            SetOnlineStatus(false);
+            ChatView.AppendSystem(rtbHistory, _room.RemoteUser.Name + " saiu da conversa.");
         }
 
         private void btnSend_Click(object sender, EventArgs e)
         {
             SendMessage();
+        }
+
+        private void txtMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Enter sends the message; Shift+Enter inserts a line break.
+            if (e.KeyCode == Keys.Enter && !e.Shift)
+            {
+                e.SuppressKeyPress = true;
+                SendMessage();
+            }
         }
 
         private void SendMessage()
@@ -105,6 +130,13 @@ namespace ChatApp.Forms
 
             ChatMessage message = new ChatMessage(_room.RemoteUser.Name, _room.LocalUser.Name, text);
             _room.Add(message);
+
+            // Receiving a message proves the remote user is active again.
+            if (!_remoteOnline)
+            {
+                SetOnlineStatus(true);
+            }
+
             DisplayMessage(message, false);
 
             if (!Visible)
@@ -119,6 +151,13 @@ namespace ChatApp.Forms
                 UpdateTitle();
                 BringToFront();
             }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            // Let the other participant know this conversation was closed on our side.
+            _client.SendLeaveChat(_room.RemoteUser.Name);
+            base.OnFormClosing(e);
         }
 
         private void DisplayMessage(ChatMessage message, bool isOwn)

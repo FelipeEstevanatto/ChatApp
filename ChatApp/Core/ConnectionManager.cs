@@ -60,6 +60,9 @@ namespace ChatApp.Core
                 case Protocol.Broadcast:
                     HandleBroadcast(source, parts);
                     break;
+                case Protocol.LeaveChat:
+                    HandleLeaveChat(source, parts);
+                    break;
             }
         }
 
@@ -153,6 +156,21 @@ namespace ChatApp.Core
             if (target != null)
             {
                 target.Send(Protocol.Build(Protocol.Msg, source.Username, parts[2]));
+            }
+        }
+
+        private void HandleLeaveChat(ClientConnection source, string[] parts)
+        {
+            if (!source.Authenticated || parts.Length < 2)
+            {
+                return;
+            }
+
+            ClientConnection target = FindByName(parts[1]);
+            if (target != null)
+            {
+                target.Send(Protocol.Build(Protocol.ChatClosed, source.Username));
+                RaiseLog(string.Format("'{0}' encerrou a conversa com '{1}'.", source.Username, parts[1]));
             }
         }
 

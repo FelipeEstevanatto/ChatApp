@@ -37,6 +37,7 @@ namespace ChatApp.Forms
             _client.ChatRequestDeclined += OnChatRequestDeclined;
             _client.MessageReceived += OnMessageReceived;
             _client.BroadcastReceived += OnBroadcastReceived;
+            _client.ChatClosedByPeer += OnChatClosedByPeer;
             _client.Disconnected += OnDisconnected;
 
             btnSendGlobal.Enabled = false;
@@ -282,6 +283,20 @@ namespace ChatApp.Forms
             chat.ReceiveMessage(text);
         }
 
+        private void OnChatClosedByPeer(string source)
+        {
+            if (this.MarshalToUi(() => OnChatClosedByPeer(source)))
+            {
+                return;
+            }
+
+            ChatForm chat;
+            if (_chats.TryGetValue(source, out chat) && !chat.IsDisposed)
+            {
+                chat.NotifyRemoteLeft();
+            }
+        }
+
         private ChatForm GetOrOpenChat(string other)
         {
             ChatForm chat;
@@ -328,6 +343,7 @@ namespace ChatApp.Forms
             _client.ChatRequestDeclined -= OnChatRequestDeclined;
             _client.MessageReceived -= OnMessageReceived;
             _client.BroadcastReceived -= OnBroadcastReceived;
+            _client.ChatClosedByPeer -= OnChatClosedByPeer;
             _client.Disconnected -= OnDisconnected;
 
             List<ChatForm> openChats = new List<ChatForm>(_chats.Values);

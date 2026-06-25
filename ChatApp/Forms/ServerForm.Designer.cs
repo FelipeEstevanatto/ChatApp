@@ -6,9 +6,11 @@ namespace ChatApp.Forms
         private System.Windows.Forms.Label lblPort;
         private System.Windows.Forms.TextBox txtPort;
         private System.Windows.Forms.Button btnStartStop;
+        private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Label lblClients;
         private System.Windows.Forms.ListBox lstClients;
         private System.Windows.Forms.Label lblLog;
+        private System.Windows.Forms.Button btnClearLog;
         private System.Windows.Forms.TextBox txtLog;
 
         protected override void Dispose(bool disposing)
@@ -26,16 +28,17 @@ namespace ChatApp.Forms
             this.lblPort = new System.Windows.Forms.Label();
             this.txtPort = new System.Windows.Forms.TextBox();
             this.btnStartStop = new System.Windows.Forms.Button();
+            this.lblStatus = new System.Windows.Forms.Label();
             this.lblClients = new System.Windows.Forms.Label();
             this.lstClients = new System.Windows.Forms.ListBox();
             this.lblLog = new System.Windows.Forms.Label();
+            this.btnClearLog = new System.Windows.Forms.Button();
             this.txtLog = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // lblPort
             // 
             this.lblPort.AutoSize = true;
-            this.lblPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPort.Location = new System.Drawing.Point(16, 22);
             this.lblPort.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblPort.Name = "lblPort";
@@ -45,7 +48,6 @@ namespace ChatApp.Forms
             // 
             // txtPort
             // 
-            this.txtPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtPort.Location = new System.Drawing.Point(73, 18);
             this.txtPort.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtPort.Name = "txtPort";
@@ -64,6 +66,17 @@ namespace ChatApp.Forms
             this.btnStartStop.UseVisualStyleBackColor = true;
             this.btnStartStop.Click += new System.EventHandler(this.btnStartStop_Click);
             // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            this.lblStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(57)))), ((int)(((byte)(43)))));
+            this.lblStatus.Location = new System.Drawing.Point(392, 22);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(58, 17);
+            this.lblStatus.TabIndex = 9;
+            this.lblStatus.Text = "\u25CF Parado";
+            // 
             // lblClients
             // 
             this.lblClients.AutoSize = true;
@@ -76,6 +89,8 @@ namespace ChatApp.Forms
             // 
             // lstClients
             // 
+            this.lstClients.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstClients.FormattingEnabled = true;
             this.lstClients.IntegralHeight = false;
             this.lstClients.ItemHeight = 16;
@@ -95,8 +110,23 @@ namespace ChatApp.Forms
             this.lblLog.TabIndex = 5;
             this.lblLog.Text = "Log de eventos:";
             // 
+            // btnClearLog
+            // 
+            this.btnClearLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClearLog.Location = new System.Drawing.Point(660, 56);
+            this.btnClearLog.Name = "btnClearLog";
+            this.btnClearLog.Size = new System.Drawing.Size(83, 26);
+            this.btnClearLog.TabIndex = 10;
+            this.btnClearLog.Text = "Limpar log";
+            this.btnClearLog.UseVisualStyleBackColor = true;
+            this.btnClearLog.Click += new System.EventHandler(this.btnClearLog_Click);
+            // 
             // txtLog
             // 
+            this.txtLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLog.Font = new System.Drawing.Font("Consolas", 9F);
             this.txtLog.Location = new System.Drawing.Point(284, 84);
             this.txtLog.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtLog.Multiline = true;
@@ -111,6 +141,8 @@ namespace ChatApp.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(760, 462);
+            this.Controls.Add(this.btnClearLog);
+            this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.txtLog);
             this.Controls.Add(this.lblLog);
             this.Controls.Add(this.lstClients);
@@ -118,6 +150,7 @@ namespace ChatApp.Forms
             this.Controls.Add(this.btnStartStop);
             this.Controls.Add(this.txtPort);
             this.Controls.Add(this.lblPort);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MinimumSize = new System.Drawing.Size(775, 499);

@@ -5,6 +5,7 @@ namespace ChatApp.Forms
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Label lblHeaderName;
+        private System.Windows.Forms.Label lblHeaderDot;
         private System.Windows.Forms.Label lblHeaderStatus;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.RichTextBox rtbHistory;
@@ -26,6 +27,7 @@ namespace ChatApp.Forms
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChatForm));
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblHeaderName = new System.Windows.Forms.Label();
+            this.lblHeaderDot = new System.Windows.Forms.Label();
             this.lblHeaderStatus = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.rtbHistory = new System.Windows.Forms.RichTextBox();
@@ -41,6 +43,7 @@ namespace ChatApp.Forms
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(102)))), ((int)(((byte)(83)))));
             this.pnlHeader.Controls.Add(this.lblHeaderName);
+            this.pnlHeader.Controls.Add(this.lblHeaderDot);
             this.pnlHeader.Controls.Add(this.lblHeaderStatus);
             this.pnlHeader.Controls.Add(this.pictureBox1);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
@@ -60,12 +63,23 @@ namespace ChatApp.Forms
             this.lblHeaderName.TabIndex = 0;
             this.lblHeaderName.Text = "Conversa";
             // 
+            // lblHeaderDot
+            // 
+            this.lblHeaderDot.AutoSize = true;
+            this.lblHeaderDot.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblHeaderDot.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(220)))), ((int)(((byte)(150)))));
+            this.lblHeaderDot.Location = new System.Drawing.Point(14, 33);
+            this.lblHeaderDot.Name = "lblHeaderDot";
+            this.lblHeaderDot.Size = new System.Drawing.Size(14, 15);
+            this.lblHeaderDot.TabIndex = 3;
+            this.lblHeaderDot.Text = "\u25CF";
+            // 
             // lblHeaderStatus
             // 
             this.lblHeaderStatus.AutoSize = true;
             this.lblHeaderStatus.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.lblHeaderStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(225)))), ((int)(((byte)(212)))));
-            this.lblHeaderStatus.Location = new System.Drawing.Point(15, 34);
+            this.lblHeaderStatus.Location = new System.Drawing.Point(31, 34);
             this.lblHeaderStatus.Name = "lblHeaderStatus";
             this.lblHeaderStatus.Size = new System.Drawing.Size(46, 19);
             this.lblHeaderStatus.TabIndex = 1;
@@ -102,22 +116,26 @@ namespace ChatApp.Forms
             this.pnlBottom.Controls.Add(this.txtMessage);
             this.pnlBottom.Controls.Add(this.btnSend);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlBottom.Location = new System.Drawing.Point(0, 438);
+            this.pnlBottom.Location = new System.Drawing.Point(0, 418);
             this.pnlBottom.Margin = new System.Windows.Forms.Padding(4);
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.Padding = new System.Windows.Forms.Padding(11, 10, 11, 10);
-            this.pnlBottom.Size = new System.Drawing.Size(579, 68);
+            this.pnlBottom.Size = new System.Drawing.Size(579, 88);
             this.pnlBottom.TabIndex = 2;
             // 
             // txtMessage
             // 
+            this.txtMessage.AcceptsReturn = true;
             this.txtMessage.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtMessage.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtMessage.Location = new System.Drawing.Point(11, 10);
             this.txtMessage.Margin = new System.Windows.Forms.Padding(4);
+            this.txtMessage.Multiline = true;
             this.txtMessage.Name = "txtMessage";
-            this.txtMessage.Size = new System.Drawing.Size(437, 30);
+            this.txtMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtMessage.Size = new System.Drawing.Size(437, 68);
             this.txtMessage.TabIndex = 0;
+            this.txtMessage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMessage_KeyDown);
             // 
             // btnSend
             // 
@@ -133,13 +151,13 @@ namespace ChatApp.Forms
             // 
             // ChatForm
             // 
-            this.AcceptButton = this.btnSend;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(579, 506);
             this.Controls.Add(this.rtbHistory);
             this.Controls.Add(this.pnlBottom);
             this.Controls.Add(this.pnlHeader);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MinimumSize = new System.Drawing.Size(434, 358);
